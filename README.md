@@ -15,14 +15,14 @@ go build -o garage-metrics-exporter cmd/main.go
 
 Following environment variables are available
 
-| name                    | default               | description                                                             |
-| ----------------------- | --------------------- | ----------------------------------------------------------------------- |
-| GARAGE_BASE_URL         | http://localhost:3903 | The listen address of the garage admin endpoint                         |
-| TOKEN                   |                       | The  token for the garage admin endpoint                                |
-| LISTEN_SOCKET           | :3905                 | The socket this exporter listens on                                     |
-| UPDATE_INTERVAL_SECONDS | 30                    | How often should the exporter request the garage admin API (in seconds) |
+| name                    | default               | description                                                                   |
+| ----------------------- | --------------------- | ----------------------------------------------------------------------------- |
+| GARAGE_BASE_URL         | http://localhost:3903 | The listen address of the garage admin endpoint                               |
+| TOKEN                   |                       | The  token for the garage admin endpoint (scopes: ListBuckets, GetBucketInfo) |
+| LISTEN_SOCKET           | :3905                 | The socket this exporter listens on                                           |
+| UPDATE_INTERVAL_SECONDS | 30                    | How often should the exporter request the garage admin API (in seconds)       |
 
-## Installation
+## Installation (systemd)
 Replace the Token in the service file with your personal token.
 Usually, this token is configured in the file `/etc/garage.toml`
 
@@ -59,4 +59,12 @@ systemctl start garage-metrics-exporter.service
 
 # Check status
 systemctl status garage-metrics-exporter.service
+```
+
+## Installation (Docker)
+Clone the repo and run these commands:
+
+```shell
+docker build --platform linux/amd64 -t garage-metrics-exporter .
+docker run --platform linux/amd64 -it -p 3905:3905 -e TOKEN=abc -e GARAGE_BASE_URL="http://host.docker.internal:3903" garage-metrics-exporter
 ```
